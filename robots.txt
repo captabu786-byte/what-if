@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://captabu786-byte.github.io/what-if/sitemap.xml
