@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHAT IF? — Scenario Simulator</title>
+<style>
+:root{--bg:#080b12;--card:#111725;--card2:#0d1320;--text:#f5f7fb;--muted:#9aa6ba;--line:#263044;--accent:#7c5cff;--accent2:#20d6a5;--danger:#ff6678}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#20234b 0,#080b12 45%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+.container{max-width:1120px;margin:auto;padding:28px 20px 60px}.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:55px}.logo{font-weight:900;letter-spacing:-1px;font-size:22px}.pill{border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px}
+.hero{text-align:center;max-width:850px;margin:auto}.hero h1{font-size:clamp(46px,8vw,82px);line-height:.95;margin:0 0 20px;letter-spacing:-5px}.hero h1 span{color:var(--accent)}.hero p{color:var(--muted);font-size:18px;line-height:1.6}
+.box{margin-top:30px;background:rgba(17,23,37,.86);border:1px solid var(--line);border-radius:24px;padding:10px;box-shadow:0 20px 70px #0008}.inputrow{display:flex;gap:10px}.inputrow input{flex:1;background:transparent;border:0;outline:0;color:white;padding:18px;font-size:17px}.btn{border:0;border-radius:15px;padding:0 24px;background:var(--accent);color:white;font-weight:800;cursor:pointer}.btn:hover{filter:brightness(1.12)}
+.examples{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;justify-content:center}.example{background:#121a2a;border:1px solid var(--line);color:#c6cede;padding:9px 12px;border-radius:999px;cursor:pointer;font-size:13px}
+#result{display:none;margin-top:40px}.topgrid{display:grid;grid-template-columns:1.5fr .7fr;gap:18px}.card{background:rgba(17,23,37,.9);border:1px solid var(--line);border-radius:20px;padding:22px}.eyebrow{color:var(--accent2);font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.score{font-size:64px;font-weight:900;line-height:1;margin-top:10px}.muted{color:var(--muted)}h2{margin:8px 0 10px;font-size:25px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}.metric{font-size:28px;font-weight:900;margin-top:7px}.bar{height:8px;background:#202a3c;border-radius:99px;overflow:hidden;margin-top:12px}.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:50%}.timeline{display:grid;gap:10px;margin-top:14px}.step{display:flex;gap:12px;align-items:flex-start;background:#0d1422;padding:14px;border-radius:13px}.num{min-width:28px;height:28px;border-radius:50%;background:#252044;display:grid;place-items:center;color:#cfc7ff;font-weight:900}.list{display:grid;gap:10px;margin-top:14px}.item{padding:13px;background:#0d1422;border-radius:12px;color:#cbd3e2}.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.secondary{background:#182236;border:1px solid var(--line);padding:12px 16px;border-radius:12px;color:#fff;cursor:pointer;font-weight:700}.compare{display:none;margin-top:18px}.small{font-size:12px;color:var(--muted)}
+footer{text-align:center;color:#68758a;margin-top:50px;font-size:12px}
+@media(max-width:760px){.topgrid,.grid{grid-template-columns:1fr}.inputrow{flex-direction:column}.btn{height:54px}.hero h1{letter-spacing:-3px}}
+
+<style>
+.pricing{margin-top:18px}.pricegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.price{background:#0d1422;border:1px solid var(--line);border-radius:16px;padding:18px}.price strong{font-size:28px}.price button{margin-top:14px;width:100%;height:44px}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#24203e;color:#d9d1ff;font-size:11px;font-weight:800}.history{margin-top:18px}.historyitem{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.historyitem:hover{background:#0d1422}
+@media(max-width:760px){.pricegrid{grid-template-columns:1fr}}
+</style>
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="nav"><div class="logo">WHAT IF<span style="color:var(--accent)">?</span></div><div style="display:flex;gap:8px;align-items:center"><div class="pill" id="usage">Free • 0/5 simulations</div><div class="pill">v0.4</div></div></nav>
+
+<section class="hero">
+<h1>See what could happen<br><span>before you do it.</span></h1>
+<p>Ask a real-world “what if?” question. WHAT IF? turns it into assumptions, scenarios, risks, a timeline and a practical next move.</p>
+<div class="box"><div class="inputrow">
+<input id="question" placeholder="What if I start an online business with $1,000?" autocomplete="off">
+<button class="btn" onclick="simulate()">Simulate →</button>
+</div></div>
+<div class="examples">
+<button class="example" onclick="use('What if I start a Roblox game with $1,000?')">🎮 Roblox game</button>
+<button class="example" onclick="use('What if I start an e-commerce business with $2,000?')">🛒 E-commerce</button>
+<button class="example" onclick="use('What if I move to Dubai and start a business?')">🌍 Move to Dubai</button>
+<button class="example" onclick="use('What if I invest $200 every month for 10 years?')">📈 Invest $200/month</button>
+</div>
+</section>
+
+
+<section class="card pricing">
+<div class="eyebrow">Simple business model</div><h2>Free to try. Pro for power users.</h2>
+<p class="muted">The product is designed so people can experience the simulator first, then pay for deeper analysis and unlimited usage.</p>
+<div class="pricegrid">
+<div class="price"><span class="badge">FREE</span><p><strong>$0</strong></p><p class="muted">5 simulations / month<br>Core scenario analysis</p></div>
+<div class="price"><span class="badge">PRO</span><p><strong>$9<span class="small">/mo</span></strong></p><p class="muted">Unlimited simulations<br>Scenario comparisons<br>Saved history</p><button class="btn" onclick="alert('Connect Stripe or another payment provider here.')">Choose Pro</button></div>
+<div class="price"><span class="badge">POWER</span><p><strong>$19<span class="small">/mo</span></strong></p><p class="muted">Everything in Pro<br>Advanced reports<br>Export-ready analysis</p><button class="btn" onclick="alert('Connect Stripe or another payment provider here.')">Choose Power</button></div>
+</div>
+</section>
+
+<section id="result">
+<div class="topgrid">
+<div class="card"><div class="eyebrow">Scenario</div><h2 id="title">Your scenario</h2><p id="summary" class="muted"></p><div class="actions"><button class="secondary" onclick="toggleCompare()">＋ Compare another scenario</button><button class="secondary" onclick="simulate()">↻ Recalculate</button></div></div>
+<div class="card"><div class="eyebrow">Success potential</div><div class="score" id="score">—</div><div class="bar"><div class="fill" id="scorebar"></div></div><p id="scoretext" class="muted"></p></div>
+</div>
+
+<div class="grid">
+<div class="card"><div class="eyebrow">Baseline</div><div class="metric" id="baseline">—</div><p class="muted">Most realistic outcome if execution is decent.</p></div>
+<div class="card"><div class="eyebrow">Upside</div><div class="metric" id="upside">—</div><p class="muted">Strong execution + favorable conditions.</p></div>
+<div class="card"><div class="eyebrow">Downside</div><div class="metric" id="downside">—</div><p class="muted">What happens if major risks hit.</p></div>
+<div class="card"><div class="eyebrow">Risk level</div><div class="metric" id="risk">—</div><p class="muted">A rough risk estimate, not a guarantee.</p></div>
+</div>
+
+<div class="grid">
+<div class="card"><div class="eyebrow">Key assumptions</div><div id="assumptions" class="list"></div></div>
+<div class="card"><div class="eyebrow">Biggest risks</div><div id="risks" class="list"></div></div>
+</div>
+
+<div class="card" style="margin-top:18px"><div class="eyebrow">12-month path</div><div id="timeline" class="timeline"></div></div>
+<div class="card" style="margin-top:18px"><div class="eyebrow">Best next move</div><h2 id="recommendation"></h2><p id="why" class="muted"></p></div>
+
+<div id="compare" class="card compare"><div class="eyebrow">Compare scenarios</div><p class="muted">Type a second scenario below.</p><div class="inputrow"><input id="compareInput" placeholder="What if I do something different?"><button class="btn" onclick="runCompare()">Compare</button></div><div id="compareResult" style="margin-top:18px"></div></div>
+</section>
+
+<section class="card history" id="historyCard" style="display:none"><div class="eyebrow">Recent simulations</div><div id="history"></div></section>
+<footer>WHAT IF? is a decision-support experiment. Estimates are illustrative, not financial, legal, immigration or business advice.</footer>
+</div>
+
+<script>
+let current=null;
+function use(q){document.getElementById('question').value=q;simulate()}
+function money(n){return '$'+Math.round(n).toLocaleString()}
+function detect(q){
+ q=q.toLowerCase();
+ if(/roblox|game|gaming/.test(q)) return 'gaming';
+ if(/e-commerce|ecommerce|shop|store|dropship|online business|business|startup/.test(q)) return 'business';
+ if(/dubai|uae|move|relocat|visa|resid/.test(q)) return 'relocation';
+ if(/invest|stock|crypto|save|saving|compound/.test(q)) return 'money';
+ if(/freelanc|client|agency/.test(q)) return 'freelance';
+ return 'general';
+}
+function makeScenario(q){
+ const type=detect(q), budget=(q.match(/\$?\s?(\d[\d,]*)/)||[])[1];
+ const b=budget?parseInt(budget.replace(/,/g,'')):1000;
+ let s={type,q,b,score:58,base:'A measurable result after consistent execution',up:'A strong result if distribution and execution click',down:'Limited return and wasted time/capital',risk:'Medium',summary:'The outcome depends less on the idea alone and more on budget, consistency, demand and how quickly you learn.',ass:[],risks:[],steps:[],rec:'Start with a small test before committing heavily.',why:'A controlled experiment gives you evidence without risking the entire budget.'};
+ if(type==='gaming'){s.score=64;s.risk='Medium–High';s.base='A small but growing player base and early monetization';s.up='A breakout game with strong retention and meaningful platform revenue';s.down='Low player retention and little or no meaningful revenue';s.ass=['A playable core loop exists','You can publish updates consistently','The game has a clear reason to return','Marketing/discovery is tested'];s.risks=['Weak retention','High competition for attention','Spending too much before validating the loop'];s.steps=['1–2 months: build the smallest fun version','3–4 months: test retention and monetization','5–8 months: improve updates and discovery','9–12 months: double down on what players actually use'];s.rec='Build the smallest addictive version first, then spend based on player data.';s.why='Roblox outcomes can vary massively. Retention and repeat play matter more than a large initial budget.'}
+ else if(type==='business'){s.score=61;s.risk='Medium–High';s.base='First customers and a clearer product-market signal';s.up='A profitable operation that can reinvest into growth';s.down='The offer fails to attract enough paying customers';s.ass=['A specific customer is targeted','The offer solves an expensive or annoying problem','Customer acquisition is affordable','Cash is reserved for testing'];s.risks=['No real demand','Advertising costs','Thin margins','Operational complexity'];s.steps=['Month 1: validate the offer with real customers','Months 2–3: improve conversion and unit economics','Months 4–6: build repeatable acquisition','Months 7–12: scale only profitable channels'];s.rec='Validate demand before building a large operation.';s.why='The biggest early mistake is spending heavily before proving people will pay.'}
+ else if(type==='relocation'){s.score=45;s.risk='High';s.base='A possible relocation plan if legal eligibility, income and costs line up';s.up='A stable move supported by a qualifying residence route and sustainable income';s.down='High setup costs, rejected applications, or income that cannot support the move';s.ass=['You qualify for the specific residence route','You can document income/funds/business activity','You can cover setup and living costs','You verify current rules before applying'];s.risks=['Visa eligibility changes','High living/setup costs','Business licensing requirements'];s.steps=['Month 1–2: verify the exact legal route','Months 2–4: build/document income and funds','Months 4–6: prepare the application/business structure','Months 6–12: relocate only after approval and a realistic budget'];s.rec='Treat relocation as a legal-and-financial project, not just a travel decision.';s.why='Residence depends on meeting a specific immigration category; business success alone does not automatically create residency.'}
+ else if(type==='money'){s.score=69;s.risk='Medium';s.base='Gradual wealth growth if contributions stay consistent';s.up='Strong long-term growth with favorable returns and disciplined contributions';s.down='Low/negative returns or interrupted contributions';s.ass=['Contributions are affordable','The time horizon is long','Fees and taxes are understood','Risk is appropriate for the goal'];s.risks=['Market losses','Stopping contributions','Overestimating returns'];s.steps=['Month 1: define goal and emergency buffer','Months 2–3: choose a suitable diversified approach','Months 4–12: automate contributions and review periodically','Years 2+: let consistency do the heavy lifting'];s.rec='Focus on contribution rate, time horizon and risk—not a guaranteed return.';s.why='Long-term outcomes are highly sensitive to contribution consistency and actual returns.'}
+ else if(type==='freelance'){s.score=67;s.risk='Medium';s.base='A few paying clients after building proof and outreach';s.up='A repeatable service business with recurring clients';s.down='Inconsistent leads and low pricing';s.ass=['You can deliver a valuable skill','You create proof/results','You contact enough potential clients','Pricing leaves room for profit'];s.risks=['No portfolio','Low outreach volume','Underpricing'];s.steps=['Month 1: build 2–3 strong samples','Months 2–3: outreach every week','Months 4–6: raise quality and pricing','Months 7–12: specialize and pursue recurring clients'];s.rec='Sell one clear outcome to one clear customer type.';s.why='A narrow offer is easier to explain, sell and improve.'}
+ if(b>0){s.b=b;s.budgetText=money(b)}
+ return s;
+}
+function render(s){
+ current=s;document.getElementById('result').style.display='block';
+ document.getElementById('title').textContent=s.q;
+ document.getElementById('summary').textContent=s.summary;
+ document.getElementById('score').textContent=s.score+'/100';
+ document.getElementById('scorebar').style.width=s.score+'%';
+ document.getElementById('scoretext').textContent=s.score>=70?'Promising, but execution still matters.':s.score>=50?'Possible, but validate the biggest assumptions first.':'High uncertainty — reduce risk before committing.';
+ document.getElementById('baseline').textContent=s.base;
+ document.getElementById('upside').textContent=s.up;
+ document.getElementById('downside').textContent=s.down;
+ document.getElementById('risk').textContent=s.risk;
+ document.getElementById('assumptions').innerHTML=s.ass.map(x=>'<div class="item">✓ '+x+'</div>').join('');
+ document.getElementById('risks').innerHTML=s.risks.map(x=>'<div class="item">⚠ '+x+'</div>').join('');
+ document.getElementById('timeline').innerHTML=s.steps.map((x,i)=>'<div class="step"><div class="num">'+(i+1)+'</div><div>'+x+'</div></div>').join('');
+ document.getElementById('recommendation').textContent=s.rec;
+ document.getElementById('why').textContent=s.why;
+ window.scrollTo({top:document.getElementById('result').offsetTop-20,behavior:'smooth'});
+}
+async function simulate(){
+ const q=document.getElementById('question').value.trim();if(!q)return;
+ let uses=Number(localStorage.getItem('wf_uses')||0);
+ if(uses>=5 && !localStorage.getItem('wf_pro')){alert('You have used your 5 free simulations. Upgrade to Pro when payments are connected.');return;}
+ uses++;localStorage.setItem('wf_uses',uses);updateUsage();
+ // Production mode: set USE_BACKEND=true and point API_BASE at your deployed server.
+ const USE_BACKEND=false, API_BASE='/api/simulate';
+ if(USE_BACKEND){
+   try{
+    const r=await fetch(API_BASE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    if(r.ok){const x=await r.json();render({q,title:x.title||q,summary:x.summary||'',score:x.score||50,base:x.baseline||'',up:x.upside||'',down:x.downside||'',risk:x.risk||'Medium',ass:x.assumptions||[],risks:x.risks||[],steps:x.timeline||[],rec:x.recommendation||'',why:x.why||''});saveHistory(q);return;}
+   }catch(e){}
+ }
+ render(makeScenario(q)); saveHistory(q);
+}
+function updateUsage(){document.getElementById('usage').textContent='Free • '+Number(localStorage.getItem('wf_uses')||0)+'/5 simulations'}
+function saveHistory(q){
+ const h=JSON.parse(localStorage.getItem('wf_history')||'[]');h.unshift(q);localStorage.setItem('wf_history',JSON.stringify(h.slice(0,8)));renderHistory();
+}
+function renderHistory(){
+ const h=JSON.parse(localStorage.getItem('wf_history')||'[]');const c=document.getElementById('historyCard');if(!h.length)return;
+ c.style.display='block';document.getElementById('history').innerHTML=h.map(x=>'<div class="historyitem" onclick="use('+JSON.stringify(x)+')">'+x+'</div>').join('');
+}
+updateUsage();renderHistory();
+function toggleCompare(){document.getElementById('compare').style.display='block';document.getElementById('compareInput').focus()}
+function runCompare(){
+ const q=document.getElementById('compareInput').value.trim();if(!q)return;
+ const s=makeScenario(q), c=document.getElementById('compareResult');
+ c.innerHTML='<div class="grid"><div class="card"><div class="eyebrow">Scenario B</div><h2>'+s.q+'</h2><div class="metric">'+s.score+'/100</div><p class="muted">'+s.risk+' risk</p></div><div class="card"><div class="eyebrow">Difference</div><h2>'+((s.score-current.score)>=0?'Scenario B scores higher':'Scenario A scores higher')+'</h2><p class="muted">Score gap: '+Math.abs(s.score-current.score)+' points. Compare the assumptions and risks before deciding.</p></div></div>';
+}
+document.getElementById('question').addEventListener('keydown',e=>{if(e.key==='Enter')simulate()});
+</script>
+</body>
+</html>
